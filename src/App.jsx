@@ -1,6 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminLayout from "./components/AdminLayout";
 import DashboardPage from "./pages/DashboardPage";
+import DriverManagementPage from "./pages/DriverManagementPage";
+import CommandCenterPage from "./pages/CommandCenterPage";
 import LoginPage from "./pages/LoginPage";
 
 function App() {
@@ -11,10 +14,14 @@ function App() {
         path="/admin"
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <AdminLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<DashboardPage />} />
+        <Route path="kyc" element={<DriverManagementPage />} />
+        <Route path="dispatch" element={<CommandCenterPage />} />
+      </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>
   );

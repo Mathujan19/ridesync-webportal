@@ -13,19 +13,37 @@ function ProtectedRoute({ children }) {
         return;
       }
 
-      const tokenResult = await user.getIdTokenResult();
-      const authorized = tokenResult.claims.role === "Admin";
-      setState({ loading: false, authorized });
+      if (!isFirebaseConfigured) {
+        // Local dev bypass
+        setState({ loading: false, authorized: true });
+        return;
+      }
+
+      try {
+        const tokenResult = await user.getIdTokenResult();
+        const authorized = tokenResult.claims.role === "Admin";
+        setState({ loading: false, authorized });
+      } catch (e) {
+        console.error("Auth check failed:", e);
+        setState({ loading: false, authorized: false });
+      }
     });
 
     return unsubscribe;
   }, []);
 
   if (state.loading) {
-    return <div className="centered">Checking session...</div>;
+    return <div style={{ padding: 40, color: "white" }}>Checking session...</div>;
   }
 
-  if (!isFirebaseConfigured || !auth || !auth.currentUser || !state.authorized) {
+  if (!isFirebaseConfigured) {
+    if (!state.authorized) {
+      return <Navigate to="/login" replace />;
+    }
+    return children;
+  }
+
+  if (!auth || !auth.currentUser || !state.authorized) {
     return <Navigate to="/login" replace />;
   }
 

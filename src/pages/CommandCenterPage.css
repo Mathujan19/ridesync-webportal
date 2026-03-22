@@ -1,0 +1,265 @@
+.cmd-center {
+    display: flex;
+    height: 100%;
+    background-color: #050b14;
+}
+
+.cmd-operations {
+    width: 320px;
+    background-color: #f8fafc;
+    border-right: 1px solid #cbd5e1;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cmd-panel-heading {
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 16px;
+    background: white;
+}
+
+.cmd-section {
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.cmd-section h3 {
+    margin: 0 0 16px 0;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.5px;
+}
+
+.cmd-queue-item {
+    background: white;
+    border: 1px solid #cbd5e1;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.cmd-queue-item:last-child {
+    margin-bottom: 0;
+}
+
+.cmd-queue-item p {
+    margin: 0 0 12px 0;
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.cmd-queue-item .dest {
+    margin: 0 0 12px 0;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 400;
+}
+
+.btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.cmd-btn {
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #cbd5e1;
+    background: white;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.cmd-btn:hover {
+    background: #f1f5f9;
+}
+
+.cmd-btn.primary {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.cmd-btn.primary:hover {
+    background: #2563eb;
+}
+
+/* Middle Map */
+.cmd-map-area {
+    flex-grow: 1;
+    position: relative;
+}
+
+/* Right Panel: SOS Tracker */
+.cmd-safety {
+    width: 380px;
+    background-color: #1e293b;
+    border-left: 1px solid #0f172a;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    z-index: 10;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.sos-alert-header {
+    background-color: #ef4444;
+    color: white;
+    padding: 24px 20px;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: bg-pulse-red 2s infinite;
+}
+
+.sos-alert-header .icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 15px #fff;
+}
+
+@keyframes bg-pulse-red {
+
+    0%,
+    100% {
+        background-color: #ef4444;
+    }
+
+    50% {
+        background-color: #dc2626;
+    }
+}
+
+.sos-details {
+    padding: 24px 20px;
+    border-bottom: 1px solid #334155;
+    font-size: 14px;
+    background: #0f172a;
+}
+
+.sos-details p {
+    margin: 0 0 10px 0;
+    color: #94a3b8;
+}
+
+.sos-details p:last-child {
+    margin-bottom: 0;
+}
+
+.sos-details strong {
+    color: white;
+}
+
+.sos-gps-trace {
+    height: 200px;
+    background-color: #050b14;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border-bottom: 1px solid #334155;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    font-family: monospace;
+    position: relative;
+}
+
+.gps-line {
+    position: absolute;
+    width: 60%;
+    height: 2px;
+    background: #ef4444;
+    transform: rotate(15deg);
+}
+
+.gps-car {
+    width: 16px;
+    height: 16px;
+    background: #3b82f6;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #3b82f6;
+    z-index: 2;
+}
+
+.sos-chat {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #0f172a;
+}
+
+.sos-chat-msgs {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.msg.driver {
+    background: #334155;
+    padding: 14px;
+    border-radius: 12px 12px 12px 0;
+    align-self: flex-start;
+    max-width: 85%;
+    font-size: 14px;
+    line-height: 1.4;
+    border-left: 3px solid #ef4444;
+}
+
+.msg.admin {
+    background: #3b82f6;
+    padding: 14px;
+    border-radius: 12px 12px 0 12px;
+    align-self: flex-end;
+    max-width: 85%;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.sos-chat-input {
+    display: flex;
+    padding: 16px;
+    border-top: 1px solid #334155;
+    background: #1e293b;
+}
+
+.sos-chat-input input {
+    flex-grow: 1;
+    background: #0f172a;
+    border: 1px solid #334155;
+    padding: 12px 16px;
+    color: white;
+    border-radius: 20px 0 0 20px;
+    outline: none;
+}
+
+.sos-chat-input input:focus {
+    border-color: #3b82f6;
+}
+
+.sos-chat-input button {
+    background: #3b82f6;
+    border: none;
+    padding: 0 20px;
+    border-radius: 0 20px 20px 0;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
