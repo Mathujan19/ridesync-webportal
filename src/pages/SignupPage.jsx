@@ -1,26 +1,27 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { loginWithAdmin, signInWithGoogle } from "../services/auth";
-import { missingFirebaseEnv, isFirebaseConfigured } from "../services/firebase";
-import "./LoginPage.css";
+import { signUpWithEmail, signInWithGoogle } from "../services/auth";
+import { isFirebaseConfigured } from "../services/firebase";
+import "./LoginPage.css"; // Reuse auth glass styles
 
-function LoginPage() {
+function SignupPage() {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (event) => {
+  const onSignup = async (event) => {
     event.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      await loginWithAdmin(email, password);
+      await signUpWithEmail(email, password, name);
       navigate("/admin");
     } catch (err) {
-      setError(err.message || "Unable to sign in");
+      setError(err.message || "Unable to create account");
     } finally {
       setLoading(false);
     }
@@ -39,35 +40,34 @@ function LoginPage() {
     <div className="auth-page">
       <div className="auth-card">
         <img src="/ridesync-logo.svg" alt="RideSync logo" className="logo" />
-        <h1>RideSync Admin</h1>
-        <p>Control operators, reports, and weather alerts in one place.</p>
-        {!isFirebaseConfigured && (
-          <p className="error-text">
-            Firebase is missing. <strong>Local Dev Mode enabled</strong>: Use <code>admin@ridesync.com</code> and <code>password</code> to sign in.
-          </p>
-        )}
-        <form onSubmit={onSubmit} className="auth-form">
+        <h1>Create Account</h1>
+        <p>Register as a new administrator.</p>
+        
+        <form onSubmit={onSignup} className="auth-form">
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
           <input
             type="email"
-            id="email"
             placeholder="Admin email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            autoComplete="username"
             required
           />
           <input
             type="password"
-            id="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
             required
           />
           {error && <p className="error-text">{error}</p>}
-          <button type="submit" disabled={loading}>
-            {loading ? "Signing in..." : "Sign in"}
+          <button type="submit" disabled={loading || !isFirebaseConfigured}>
+            {loading ? "Registering..." : "Sign Up"}
           </button>
         </form>
 
@@ -75,18 +75,17 @@ function LoginPage() {
            <span>OR</span>
         </div>
 
-        <button className="auth-btn-secondary" onClick={onGoogleAuth} type="button" disabled={!isFirebaseConfigured}>
+        <button className="auth-btn-secondary" onClick={onGoogleAuth} disabled={!isFirebaseConfigured}>
           <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google" style={{width: 18, marginRight: 8}}/>
           Sign in with Google
         </button>
 
         <div className="auth-footer-links">
-           <Link to="/forgot-password">Forgot Password?</Link>
-           <Link to="/signup">Don't have an account? Sign Up</Link>
+           <Link to="/login">Already have an account? Sign In</Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default LoginPage;
+export default SignupPage;

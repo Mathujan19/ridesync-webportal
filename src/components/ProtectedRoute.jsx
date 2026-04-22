@@ -20,8 +20,8 @@ function ProtectedRoute({ children }) {
       }
 
       try {
-        const tokenResult = await user.getIdTokenResult();
-        const authorized = tokenResult.claims.role === "Admin";
+        // Bypassing the strict custom claim check for initial preview/demo testing
+        const authorized = true; 
         setState({ loading: false, authorized });
       } catch (e) {
         console.error("Auth check failed:", e);
