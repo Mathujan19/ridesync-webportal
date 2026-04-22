@@ -1,7 +1,28 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { watchAuthState, logout } from "../services/auth";
 import "./AdminLayout.css";
 
 function AdminLayout() {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const unsub = watchAuthState((fetchedUser) => {
+            setUser(fetchedUser);
+        });
+        return () => unsub();
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate("/login");
+        } catch (error) {
+            console.error("Failed to sign out:", error);
+        }
+    };
+
     return (
         <div className="admin-layout">
             <nav className="admin-sidebar">
@@ -29,6 +50,22 @@ function AdminLayout() {
                     >
                         Command Center
                     </NavLink>
+                </div>
+                
+                {/* Admin Profile & Logout Pane */}
+                <div className="admin-profile-pane">
+                    <div className="profile-details">
+                        <div className="profile-avatar">
+                            {user?.displayName ? user.displayName.charAt(0).toUpperCase() : "A"}
+                        </div>
+                        <div className="profile-text">
+                            <strong>{user?.displayName || "Administrator"}</strong>
+                            <span>{user?.email || "admin@ridesync.com"}</span>
+                        </div>
+                    </div>
+                    <button className="logout-btn" onClick={handleLogout}>
+                        Logout
+                    </button>
                 </div>
             </nav>
             <main className="admin-main-content">
