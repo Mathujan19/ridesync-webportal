@@ -1,18 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./DriverManagementPage.css";
+import { subscribeToDrivers, updateDriverStatus } from "../services/drivers";
+import { isFirebaseConfigured } from "../services/firebase";
 
-// Mock data for the driver queue
-const mockDrivers = [
-    { id: "S-001", name: "Kamal Perera", status: "Pending Verification", rating: 4.8, vehicles: 1, joined: "Oct 12, 2025" },
-    { id: "S-002", name: "Nimal Silva", status: "Under Review", rating: 4.5, vehicles: 1, joined: "Oct 14, 2025" },
-    { id: "S-003", name: "Sunil Silva", status: "Documents Rejected", rating: 3.9, vehicles: 2, joined: "Oct 15, 2025" },
-    { id: "S-004", name: "Anura Kumara", status: "Pending Verification", rating: 4.9, vehicles: 1, joined: "Oct 16, 2025" },
+// Fallback Mock data for when Firebase is not connected locally
+const fallbackMockDrivers = [
+    { id: "S-001", name: "Kamal Perera (Local Mock)", status: "Pending Verification", rating: 4.8, vehicles: 1, joined: "Oct 12, 2025" },
+    { id: "S-002", name: "Nimal Silva (Local Mock)", status: "Under Review", rating: 4.5, vehicles: 1, joined: "Oct 14, 2025" },
+    { id: "S-003", name: "Sunil Silva (Local Mock)", status: "Documents Rejected", rating: 3.9, vehicles: 2, joined: "Oct 15, 2025" },
 ];
 
 export default function DriverManagementPage() {
-    const [activeDriverId, setActiveDriverId] = useState("S-004");
+    const [drivers, setDrivers] = useState([]);
+    const [activeDriverId, setActiveDriverId] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const activeDriver = mockDrivers.find((d) => d.id === activeDriverId);
+    // Initialize Firebase listener
+    useEffect(() => {
+        if (!isFirebaseConfigured) {
+            // Local dev mode fallback
+            setDrivers(fallbackMockDrivers);
+            setActiveDriverId(fallbackMockDrivers[0].id);
+            setLoading(false);
+            return;
+        }
+
+        const unsubscribe = subscribeToDrivers((data) => {
+            setDrivers(data);
+            setLoading(false);
+            
+            // Auto-select the first driver if none is selected yet
+            if (data.length > 0) {
+                setActiveDriverId((prevId) => {
+                    // Try to preserve selection if possible, otherwise snap to first
+                    const stillExists = data.some(d => d.id === prevId);
+                    return stillExists ? prevId : data[0].id;
+                });
+            } else {
+                setActiveDriverId(null);
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    const activeDriver = drivers.find((d) => d.id === activeDriverId);
+
+    const handleAction = async (newStatus) => {
+        if (!activeDriver) return;
+
+        if (!isFirebaseConfigured) {
+            // Update local state so testing works without Firebase
+            setDrivers(prev => prev.map(d => d.id === activeDriver.id ? { ...d, status: newStatus } : d));
+            alert(`Test Mode ✅ Driver KYC Status updated locally to: ${newStatus}`);
+            return;
+        }
+        
+        try {
+            await updateDriverStatus(activeDriver.id, newStatus);
+            alert(`✅ Driver KYC Status updated to: ${newStatus}`);
+        } catch (err) {
+            alert("Warning: Failed to update driver KYC state in Firestore.");
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="kyc-vault" style={{ alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
+                Initializing KYC Verification Secure Vault...
+            </div>
+        );
+    }
+
+    if (!activeDriver) {
+        return (
+            <div className="kyc-vault" style={{ alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
+                {!isFirebaseConfigured ? "Setup Firebase to see live operators." : "No drivers currently existing in the database."}
+            </div>
+        );
+    }
 
     return (
         <div className="kyc-vault">
@@ -20,7 +86,7 @@ export default function DriverManagementPage() {
             <div className="kyc-queue">
                 <div className="kyc-queue-header">Driver Verification Queue</div>
                 <div className="kyc-queue-list">
-                    {mockDrivers.map((driver) => (
+                    {drivers.map((driver) => (
                         <div
                             key={driver.id}
                             className={`kyc-queue-item ${activeDriverId === driver.id ? "active" : ""}`}
@@ -37,9 +103,9 @@ export default function DriverManagementPage() {
             <div className="kyc-workspace">
                 {/* Top Docked Buttons */}
                 <div className="kyc-actions-bar">
-                    <button className="kyc-btn suspend">Suspend Account</button>
-                    <button className="kyc-btn reject">Reject Documents</button>
-                    <button className="kyc-btn approve">Approve Driver</button>
+                    <button className="kyc-btn suspend" onClick={() => handleAction("Suspended")}>Suspend Account</button>
+                    <button className="kyc-btn reject" onClick={() => handleAction("Documents Rejected")}>Reject Documents</button>
+                    <button className="kyc-btn approve" onClick={() => handleAction("Approved / Active")}>Approve Driver</button>
                 </div>
 
                 {/* Content Area: Profile + Documents split */}
@@ -57,15 +123,15 @@ export default function DriverManagementPage() {
                             </div>
                             <div className="metric">
                                 <span className="label">Customer Rating</span>
-                                <span className="val" style={{ color: "#f59e0b" }}>★ {activeDriver.rating}</span>
+                                <span className="val" style={{ color: "#f59e0b" }}>★ {activeDriver.rating || "N/A"}</span>
                             </div>
                             <div className="metric">
                                 <span className="label">Registered Vehicles</span>
-                                <span className="val">{activeDriver.vehicles}</span>
+                                <span className="val">{activeDriver.vehicles || "N/A"}</span>
                             </div>
                             <div className="metric">
                                 <span className="label">Join Date</span>
-                                <span className="val">{activeDriver.joined}</span>
+                                <span className="val">{activeDriver.joined || "N/A"}</span>
                             </div>
                         </div>
 
