@@ -1,63 +1,40 @@
-# RideSync Admin Web Portal
+# RideSync Web Portal
 
-React + Firebase admin panel for coordinating operators and issue alerts.
+## Overview
+The RideSync Web Portal is a powerful application designed to seamlessly facilitate ride-sharing experiences, connecting users for efficient travel solutions.
 
-## Architecture (Triangular Flow)
+## What The App Can Do
+- **Real-Time Ride Matching**: Instantly connects riders with drivers based on location and preferences
+- **Live Location Tracking**: Track your ride in real-time for enhanced safety and coordination
+- **Secure Payment Processing**: Safe and encrypted transaction handling for all rides
+- **User Ratings & Reviews**: Build community trust through transparent feedback system
+- **Multi-Platform Support**: Access the service from web or mobile devices
+- **Regional Broadcast Messaging**: Admins can communicate important updates to operators
+- **Admin Dashboard**: Comprehensive control panel for managing users, operators, and alerts
+- **Weather Integration**: Real-time weather data for optimal ride planning
+- **Operator Status Management**: Track operator availability and service regions
 
-1. Admin Web App (React): sends commands from a protected admin panel.
-2. Firebase (Auth + Firestore): stores state and enforces permissions.
-3. Operator App (Mobile): receives updates via Firestore listeners and FCM push.
+## Quick Start
+1. Sign up and create your profile
+2. Request a ride by entering pick-up and drop-off locations
+3. Connect with available drivers or riders
+4. Complete your ride and rate your experience
 
-## Implemented Modules
+## Technology Stack
+- **Frontend**: React with Vite
+- **Backend**: Firebase (Firestore, Authentication, Cloud Functions)
+- **Real-Time Updates**: Firestore listeners and FCM push notifications
 
-- Protected routes with Firebase Auth and Custom Claim role check (`Admin` only).
-- Firestore-driven dashboard modules:
-	- Live issue list/map entry point
-	- Broadcast messenger by region
-	- Operator status toggle (active/break)
-	- User freeze/unfreeze controls
-	- Weather API panel (OpenWeather)
-	- Admin action logs
-- Issue reporting flow to `road_alerts` with Cloud Function trigger for FCM.
+## Environment Setup
+Copy `.env.example` to `.env` and configure:
+- Firebase credentials (API Key, Auth Domain, Project ID, Storage Bucket, Messaging Sender ID, App ID)
+- OpenWeather API Key (optional)
 
-## Data Collections
-
-- `users/`: profile, role, frozen state
-- `reports/`: road/weather issues
-- `road_alerts/`: admin-generated urgent alerts
-- `operators/`: operator status and region
-- `broadcasts/`: regional operator broadcasts
-- `logs/`: immutable admin action audit trail
-
-## Security and Backend
-
-- Firestore rules are in `firestore.rules` and restrict role edits to admins.
-- Cloud Functions are in `functions/index.js`:
-	- `notifyOperatorsOnRoadAlert`
-	- `createOperatorAccount`
-	- `weatherWatchdog`
-
-## Environment Variables
-
-Copy `.env.example` to `.env` and set:
-
-- `VITE_FIREBASE_API_KEY`
-- `VITE_FIREBASE_AUTH_DOMAIN`
-- `VITE_FIREBASE_PROJECT_ID`
-- `VITE_FIREBASE_STORAGE_BUCKET`
-- `VITE_FIREBASE_MESSAGING_SENDER_ID`
-- `VITE_FIREBASE_APP_ID`
-- `VITE_OPENWEATHER_API_KEY` (optional)
-
-## Run
-
+## Running the Application
 ```bash
 npm install
 npm run dev
 ```
 
-## Next Deploy Steps
-
-1. Deploy Firestore rules: `firebase deploy --only firestore:rules`
-2. Deploy functions: `firebase deploy --only functions`
-3. Set custom claims for admins/operators in Firebase Admin SDK or callable flow.
+## Support
+For assistance, please contact our support team or visit our help center.
