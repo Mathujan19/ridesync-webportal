@@ -6,8 +6,8 @@ import "./LoginPage.css";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(!isFirebaseConfigured ? "admin@ridesync.com" : "");
+  const [password, setPassword] = useState(!isFirebaseConfigured ? "password" : "");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -42,8 +42,9 @@ function LoginPage() {
         <h1>RideSync Admin</h1>
         <p>Control operators, reports, and weather alerts in one place.</p>
         {!isFirebaseConfigured && (
-          <p className="error-text">
-            Firebase is missing. <strong>Local Dev Mode enabled</strong>: Use <code>admin@ridesync.com</code> and <code>password</code> to sign in.
+          <p className="info-text">
+            <strong>Local Dev Mode enabled.</strong> Firebase is not configured.
+            Using default credentials.
           </p>
         )}
         <form onSubmit={onSubmit} className="auth-form">
