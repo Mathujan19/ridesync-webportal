@@ -3,6 +3,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./components/AdminLayout";
 import DashboardPage from "./pages/DashboardPage";
 import DriverManagementPage from "./pages/DriverManagementPage";
+import FleetRegistryPage from "./pages/FleetRegistryPage";
 import CommandCenterPage from "./pages/CommandCenterPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
@@ -23,6 +24,7 @@ function App() {
         }
       >
         <Route index element={<DashboardPage />} />
+        <Route path="registry" element={<FleetRegistryPage />} />
         <Route path="kyc" element={<DriverManagementPage />} />
         <Route path="dispatch" element={<CommandCenterPage />} />
       </Route>

@@ -39,6 +39,12 @@ function AdminLayout() {
                         Mission Control
                     </NavLink>
                     <NavLink
+                        to="/admin/registry"
+                        className={({ isActive }) => isActive ? "admin-nav-item active" : "admin-nav-item"}
+                    >
+                        Fleet Registry
+                    </NavLink>
+                    <NavLink
                         to="/admin/kyc"
                         className={({ isActive }) => isActive ? "admin-nav-item active" : "admin-nav-item"}
                     >
