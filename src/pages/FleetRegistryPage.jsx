@@ -149,6 +149,7 @@ function FleetRegistryPage() {
   }, []);
 
   const normalizedQuery = query.trim().toLowerCase();
+  const isSearching = normalizedQuery.length > 0;
 
   const filteredBuses = useMemo(() => {
     if (!normalizedQuery) return buses;
@@ -268,27 +269,31 @@ function FleetRegistryPage() {
         </label>
       </header>
 
-      <div className="registry-stats">
-        {counts.map((stat) => (
-          <article key={stat.label} className={`registry-stat ${stat.tone}`}>
-            <span className="registry-stat-label">{stat.label}</span>
-            <strong>{stat.value}</strong>
-          </article>
-        ))}
-      </div>
+      {!isSearching && (
+        <>
+          <div className="registry-stats">
+            {counts.map((stat) => (
+              <article key={stat.label} className={`registry-stat ${stat.tone}`}>
+                <span className="registry-stat-label">{stat.label}</span>
+                <strong>{stat.value}</strong>
+              </article>
+            ))}
+          </div>
 
-      <div className="registry-status">
-        <span className={`registry-dot ${isFirebaseConfigured ? "online" : "offline"}`} />
-        <p>
-          {isFirebaseConfigured
-            ? "Live registry is connected to Firestore collections for buses, drivers, and conductors."
-            : "Local demo data is active. Add Firebase env vars and Firestore collections to switch this page to live data."}
-        </p>
-      </div>
+          <div className="registry-status">
+            <span className={`registry-dot ${isFirebaseConfigured ? "online" : "offline"}`} />
+            <p>
+              {isFirebaseConfigured
+                ? "Live registry is connected to Firestore collections for buses, drivers, and conductors."
+                : "Local demo data is active. Add Firebase env vars and Firestore collections to switch this page to live data."}
+            </p>
+          </div>
+        </>
+      )}
 
       {loading ? (
         <div className="registry-loading">Loading registry data...</div>
-      ) : (
+      ) : isSearching ? (
         <div className="registry-body">
           <div className="registry-columns">
             {renderList("bus", "Registered buses", filteredBuses)}
@@ -349,6 +354,8 @@ function FleetRegistryPage() {
             )}
           </aside>
         </div>
+      ) : (
+        <div className="registry-loading">Enter a search query to see buses, drivers, and conductors.</div>
       )}
     </div>
   );
