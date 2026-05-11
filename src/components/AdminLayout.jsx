@@ -48,7 +48,7 @@ function AdminLayout() {
                         to="/admin/kyc"
                         className={({ isActive }) => isActive ? "admin-nav-item active" : "admin-nav-item"}
                     >
-                        Driver KYC Vault
+                        Driver Verifications
                     </NavLink>
                     <NavLink
                         to="/admin/dispatch"

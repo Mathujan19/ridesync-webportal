@@ -25,4 +25,4 @@ export const subscribeToBuses = (callback) =>
   subscribeToCollection("buses", callback);
 
 export const subscribeToConductors = (callback) =>
-  subscribeToCollection("conductors", callback);
+  subscribeToCollection("conductors", callback); 
